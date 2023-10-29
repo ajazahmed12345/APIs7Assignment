@@ -32,15 +32,6 @@ public class CategoryController {
         return new ResponseEntity<>(categoryDto, HttpStatus.OK);
     }
 
-    private CategoryDto convertCategoryToCategoryDto(Category category) {
-        CategoryDto categoryDto = new CategoryDto();
-
-        categoryDto.setId(category.getId());
-        categoryDto.setName(category.getName());
-
-        return categoryDto;
-
-    }
 
     @GetMapping("/getAllCategories")
     public List<CategoryDto> getAllCategories(){
@@ -49,6 +40,16 @@ public class CategoryController {
         List<CategoryDto> response = categories.stream().map(e-> convertCategoryToCategoryDto(e)).collect(Collectors.toList());
 
         return response;
+
+    }
+
+    private CategoryDto convertCategoryToCategoryDto(Category category) {
+        CategoryDto categoryDto = new CategoryDto();
+
+        categoryDto.setId(category.getId());
+        categoryDto.setName(category.getName());
+
+        return categoryDto;
 
     }
 

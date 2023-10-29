@@ -27,17 +27,17 @@ public class ProductController {
     @PostMapping()
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) throws NotFoundException{
 
-        Product product = new Product();
-        Category category = new Category();
-        category.setName(productDto.getCategory());
+//        Product product = new Product();
+//        Category category = new Category();
+//        category.setName(productDto.getCategory());
+//
+//        product.setCategory(category);
+//        product.setDescription(productDto.getDescription());
+//        product.setTitle(productDto.getTitle());
+//        product.setPrice(productDto.getPrice());
+//        product.setImage(productDto.getImage());
 
-        product.setCategory(category);
-        product.setDescription(productDto.getDescription());
-        product.setTitle(productDto.getTitle());
-        product.setPrice(productDto.getPrice());
-        product.setImage(productDto.getImage());
-
-        ProductDto response = convertProductToProductDto(productService.createProduct(product));
+        ProductDto response = convertProductToProductDto(productService.createProduct(productDto));
 
 
         return new ResponseEntity<>(response , HttpStatus.OK);
@@ -69,13 +69,22 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProductById(@PathVariable("id") Long id) throws NotFoundException{
         boolean ans = productService.deleteProductById(id);
+
 //        if(ans == false){
 //            throw new NotFoundException("Product you want to deleted does not exist.");
 //        }
 
         return new ResponseEntity<>("Product with id = " +  id + " has been deleted.", HttpStatus.OK);
 
+    }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ProductDto> updateProductById(@PathVariable("id") Long id, @RequestBody ProductDto productDto) throws NotFoundException{
+        Product product = productService.updateProductById(id, productDto);
+
+        ProductDto response = convertProductToProductDto(product);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     private ProductDto convertProductToProductDto(Product product){
@@ -83,7 +92,7 @@ public class ProductController {
 
         productDto.setId(product.getId());
         productDto.setTitle(product.getTitle());
-        productDto.setDescription(productDto.getDescription());
+        productDto.setDescription(product.getDescription());
         productDto.setImage(product.getImage());
         productDto.setPrice(product.getPrice());
         productDto.setCategory(product.getCategory().getName());

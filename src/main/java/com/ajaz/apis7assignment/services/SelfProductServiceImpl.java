@@ -1,6 +1,7 @@
 package com.ajaz.apis7assignment.services;
 
 
+import com.ajaz.apis7assignment.dtos.ProductDto;
 import com.ajaz.apis7assignment.exceptions.NotFoundException;
 import com.ajaz.apis7assignment.models.Category;
 import com.ajaz.apis7assignment.models.Product;
@@ -21,15 +22,26 @@ public class SelfProductServiceImpl implements ProductService{
         this.categoryRepository = categoryRepository;
     }
     @Override
-    public Product createProduct(Product product) throws NotFoundException{
+    public Product createProduct(ProductDto productDto) throws NotFoundException{
 
-        Optional<Category> categoryOptional = categoryRepository.findByName(product.getCategory().getName());
+        Product product = new Product();
+
+        product.setDescription(productDto.getDescription());
+        product.setTitle(productDto.getTitle());
+        product.setPrice(productDto.getPrice());
+        product.setImage(productDto.getImage());
+
+        Optional<Category> categoryOptional = categoryRepository.findByName(productDto.getCategory());
         if(categoryOptional.isEmpty()){
-            throw new NotFoundException("category did not exist.");
+            Category category = new Category();
+            category.setName(productDto.getCategory());
+            product.setCategory(category);
+        }
+        else {
+            Category category = categoryOptional.get();
+            product.setCategory(category);
         }
 
-        Category category = categoryOptional.get();
-        product.setCategory(category);
 
         Product savedProduct = productRepository.save(product);
 
@@ -76,5 +88,35 @@ public class SelfProductServiceImpl implements ProductService{
         productRepository.deleteById(id);
 
         return true;
+    }
+
+    @Override
+    public Product updateProductById(Long id, ProductDto productDto) throws NotFoundException {
+
+        Optional<Product> productOptional = productRepository.findById(id);
+        if(productOptional.isEmpty()){
+            throw new NotFoundException("Product you want to update does not exist.");
+        }
+
+        Product product = productOptional.get();
+        product.setPrice(productDto.getPrice());
+        product.setTitle(productDto.getTitle());
+        product.setDescription(productDto.getDescription());
+        product.setImage(productDto.getImage());
+
+        Optional<Category> categoryOptional = categoryRepository.findByName(productDto.getCategory());
+
+        if(categoryOptional.isPresent()){
+            product.setCategory(categoryOptional.get());
+        }
+        else{
+            Category category = new Category();
+            category.setName(productDto.getCategory());
+
+            product.setCategory(category);
+        }
+
+        return productRepository.save(product);
+
     }
 }
