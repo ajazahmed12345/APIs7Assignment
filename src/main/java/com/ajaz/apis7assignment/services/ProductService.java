@@ -15,4 +15,6 @@ public interface ProductService {
     List<Product> getAllProducts();
 
     List<Product> getProductsInCategory(String name) throws NotFoundException;
+
+    boolean deleteProductById(Long id) throws NotFoundException;
 }

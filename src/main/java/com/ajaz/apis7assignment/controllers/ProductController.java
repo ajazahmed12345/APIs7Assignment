@@ -66,6 +66,18 @@ public class ProductController {
         return response;
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProductById(@PathVariable("id") Long id) throws NotFoundException{
+        boolean ans = productService.deleteProductById(id);
+//        if(ans == false){
+//            throw new NotFoundException("Product you want to deleted does not exist.");
+//        }
+
+        return new ResponseEntity<>("Product with id = " +  id + " has been deleted.", HttpStatus.OK);
+
+
+    }
+
     private ProductDto convertProductToProductDto(Product product){
         ProductDto productDto = new ProductDto();
 
